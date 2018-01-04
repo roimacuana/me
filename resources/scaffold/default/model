@@ -1,0 +1,45 @@
+<?php
+/**
+ * Created by Rzian Generator.
+ * User: !@{DEVELOPER}^
+ * Date: !@{DATETIME}^
+ */
+
+namespace !@{NAME_SPACE}^;
+
+use Rzian\Scaffold\Model;
+
+class !@{CLASS}^ extends Model
+{
+    /**
+     * Table name
+     * @var string
+     */
+    protected $table = '!@{TABLE}^';
+
+    /**
+     * Timestamp
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * Fillables
+     * @var array
+     */
+    protected $fillable = [
+        !@{FILLABLE}^
+    ];
+
+    /**
+     * Validation Rules
+     * @var array
+     */
+    protected $rules = [
+        !@{RULES}^
+    ];
+
+
+    !@{RELATIONSHIP}^
+
+}

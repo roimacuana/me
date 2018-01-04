@@ -1,0 +1,5 @@
+
+    <div class="form-control">
+        <label for="!@{NAME}^">!@{LABEL}^</label>
+        <input id="!@{NAME}^" name="!@{NAME}^" ng-model="form.mapping.!@{NAME}^">
+    </div>

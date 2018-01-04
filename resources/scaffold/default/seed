@@ -1,0 +1,23 @@
+<?php
+/**
+ * Created by Rzian Generator.
+ * User: !@{DEVELOPER}^
+ * Date: !@{DATETIME}^
+ */
+
+use Illuminate\Database\Seeder;
+
+class !@{CLASS}^TableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+    	DB::table('!@{TABLE}^')->insert([
+            !@{OUTPUT}^
+    	]);
+    }
+}
