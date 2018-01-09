@@ -1,7 +1,0 @@
-<!--
- * Created by Rzian Generator.
- * User: !@{DEVELOPER}^
- * Date: !@{DATETIME}^
- //-->
-<form method="post" action="{{url('!@{ROUTE}^')}}">!@{FIELDS}^
-</form>

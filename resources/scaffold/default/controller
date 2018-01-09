@@ -1,154 +1,107 @@
 <?php
-/**
- * Created by Rzian Scaffold Generator.
- * User: !@{DEVELOPER}^
- * Date: !@{DATETIME}^
- */
 
-namespace App\Http\Controllers;
+namespace DummyNamespace;
 
-use !@{NAMESPACE}^;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\DummyClass;
 
-class !@{MODEL}^Controller extends Controller
+class DummyClass extends Controller
 {
-    /**
-     * Max limit per row to display
-     */
-    const ROW_LIMIT = 20;
 
     /**
      * The constructor class.
-     *
-     * @todo Make sure to config the route validation rule for id in RouteServiceProvider.
-     *       Hence, put this line "Route::pattern('id', '[0-9]+');" under boot method.
-     *
      * @todo Set your middleware restriction here.
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+
     }
 
     /**
-     * !@{MODEL}^ data listing.
-     *
-     * @route get /!@{ROUTE}^
-     *
-     * @param Request $request
-     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
-     *
-     * @todo customize the query builder based to your result expectation.
+     * @route get /
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+    public function test(){
+        return view('events.page');
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @route get /users
+     * @param $request Request
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
+     */
+
     public function index(Request $request)
     {
-        if (! $request->wantsJson())
+        if (!$request->wantsJson())
         {
-            return view('!@{VAR}^.index');
+            return view('events.index');
         }
 
-        $limit = (int)$request->input('limit'); $limit = $limit < 1 ? self::ROW_LIMIT : $limit;
-        $page = (int)$request->input('page'); $page = $page < 1 ? 1 : $page;
         $status = 204;
-        $pages = 0;
         $list = [];
 
-        $query = !@{MODEL}^::query();
-        // $query->where();
+        $query = User::query();
 
-        if (($rows = $query->count()) > 0)
-        {
+        if(($rows = $query->count()) > 0 ){
             $status = 200;
-            $pages = (int)ceil($rows / $limit);
-            $list = $query->orderBy('id', 'desc')
-                          ->limit($limit)
-                          ->offset(--$page * $limit)
-                          ->get();
+            $list = $query->get();
         }
 
-        return response()->json(compact('rows', 'pages', 'list'), $status);
+        return response()->json(compact('list'), $status);
     }
 
     /**
-     * !@{MODEL}^ entry creation.
-     *
-     * @route post /!@{ROUTE}^
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function create(Request $request)
-    {
-        $!@{VAR}^ = new !@{MODEL}^();
-
-        $!@{VAR}^->fill($request->all());
-
-        return $this->save($!@{VAR}^, 201);
-    }
-
-    /**
-     * !@{MODEL}^ row data retrieval.
-     *
-     * @route get /!@{ROUTE}^/{id}
-     *
-     * @param $id
+     * Store a newly created resource in storage.
+     * @route post /users
+     * @param $request Request
      * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      */
-    public function retrieve($id)
+    public function store(Request $request)
     {
-        if (! $!@{VAR}^ = !@{MODEL}^::find($id))
-        {
-            $message = sprintf('Not found id "%d"', (int)$id);
-            return response()->json(compact('message'), 404);
-        }
+        $event = new User();
 
-        return response()->json($!@{VAR}^->toArray(), 200);
-    }    
+        $event->fill($request->all());
+
+        return $this->save($event, 201);
+    }
+
 
     /**
-     * !@{MODEL}^ entry modification.
-     *
-     * @route patch /!@{ROUTE}^
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Update the specified resource in storage.
+     * @route patch /users
+     * @param  Request  $request
+     * @return Response
      */
     public function update(Request $request)
     {
-        if (! $!@{VAR}^ = !@{MODEL}^::find($id = $request->input('id')))
+        if (! $user = User::find($id = $request->input('id')))
         {
             $message = sprintf("Not found id '%d'", $id);
             return response()->json(compact('message'), 404);
         }
 
-        $!@{VAR}^->fill($request->all());
+        $user->fill($request->all());
 
-        if(! $!@{VAR}^->isDirty())
-        {
-            return response(null, 304);
-        }
-
-        return $this->save($!@{VAR}^);
+        return $this->save($user, 200);
     }
 
     /**
-     * !@{MODEL}^ data removal entry.
-     *
-     * @route delete /!@{ROUTE}^
-     *    
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Remove the specified resource from storage.
+     * @route delete /users
+     * @param  Request  $request
+     * @return Response
      */
-    public function delete(Request $request)
+    public function destroy(Request $request)
     {
-        if (! $!@{VAR}^ = !@{MODEL}^::find($id = $request->input('id')))
+        if (! $event = User::find($id = $request->input('id')))
         {
             $message = sprintf("Not found id '%d'", $id);
             return response()->json(compact('message'), 404);
         }
 
-        if (! $!@{VAR}^->delete())
+        if (! $event->delete())
         {
             $message = sprintf("Unable to remove id '%d'", $id);
             return response()->json(compact('message'), 422);
@@ -158,33 +111,22 @@ class !@{MODEL}^Controller extends Controller
         return response()->json(compact('message'));
     }
 
+
     /**
-     * !@{MODEL}^ saving entry.
+     * Save the specified resource from storage.
      *
-     * @param !@{MODEL}^ $!@{VAR}^
+     * @param User $user
      * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    public function save(!@{MODEL}^ $!@{VAR}^, $status = 200)
+    public function save(User $user, $status = 200)
     {
         $message = sprintf('%s successfully', $status == 200 ? "Updated" : "Created");
 
-        try 
-        {
-            if (! $!@{VAR}^->hasError() && $!@{VAR}^->save())
-            {
-                return response()->json(compact('message'), $status);
-            }
-
-            $status = 400;
-            $message = $!@{VAR}^->errors();
-        }
-        catch (QueryException $e)
-        {
-            $status = 422;
-            $message = $e->getMessage();
-        }
+        $user->save();
 
         return response()->json(compact('message'), $status);
     }
+
 }
+
