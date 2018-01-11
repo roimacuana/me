@@ -11,3 +11,5 @@
 |
 */
 
+
+Create::routes(App\Http\Controllers\HomeController::class);
