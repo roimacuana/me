@@ -31,8 +31,8 @@
                 mapping: {}
             };
 
-            $http.get('http://localhost/employees').then(function(response){
-                $scope.employees = response.data.list;
+            $http.get('http://localhost/{{route}}').then(function(response){
+                $scope.{{route}} = response.data.list;
             });
 
             $scope.sort = function(keyname){
@@ -51,7 +51,7 @@
 
             $scope.update = function(index){
                 $scope.form.display  = true;
-                $scope.form.mapping = $scope.employees[index];
+                $scope.form.mapping = $scope.{{route}}[index];
             }
 
              $scope.save = function(){
@@ -110,7 +110,7 @@
                                  $http.post(url, {id : id, _method: 'delete'}).then(function(response){
 
                                      $ngConfirm(response.data.message);
-                                     $scope.employees.splice(row,1);
+                                     $scope.{{route}}.splice(row,1);
 
                                  }, function(response){
 
@@ -157,11 +157,11 @@ Event
             </tr>
             </thead>
             <tbody>
-            <tr dir-paginate="data in employees|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
+            <tr dir-paginate="data in {{route}}|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
                 <td><% data.id %></td>
                 <td>
-                    <button type="button" class="btn btn-warning" ng-click="update(employees.indexOf(data))">Update</button>
-                    <button type="button" class="btn btn-danger" ng-click="delete(data.id,employees.indexOf(data))">Delete</button>
+                    <button type="button" class="btn btn-warning" ng-click="update({{route}}.indexOf(data))">Update</button>
+                    <button type="button" class="btn btn-danger" ng-click="delete(data.id,{{route}}.indexOf(data))">Delete</button>
                 </td>
             </tr>
             </tbody>
@@ -174,7 +174,7 @@ Event
     </div>
 
     <div class="container" ng-show="form.display">
-        @include('employees.form')
+        @include('{{route}}.form')
     </div>
 
 </div>
