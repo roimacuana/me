@@ -26,22 +26,39 @@ class EmployeeController extends Controller
 
     public function index(Request $request)
     {
-        if (!$request->wantsJson())
-        {
-            return view('employees.index');
-        }
+        if (! $request->wantsJson())
+            {
+                return view('employees.index');
+            }
 
-        $status = 204;
-        $list = [];
+            $searchIndex = $request->input('searchIndex');
+            $searchValue = $request->input('searchValue');
+            $sortIndex = $request->input('sortIndex');
+            $sortOrder = $request->input('sortOrder');
 
-        $query = Employee::query();
+            $limit = (int)$request->input('limit'); $limit = $limit < 1 ? self::ROW_LIMIT : $limit;
+            $page = (int)$request->input('page'); $page = $page < 1 ? 1 : $page;
+            $status = 204;
+            $pages = 0;
+            $list = [];
 
-        if(($rows = $query->count()) > 0 ){
-            $status = 200;
-            $list = $query->get();
-        }
+            $query = Employee::query();
 
-        return response()->json(compact('list'), $status);
+            if ($searchIndex && $searchValue)
+            {
+                $query->where($searchIndex, 'like',sprintf('%s%%', $searchValue));
+            }
+
+            if (($rows = $query->count()) > 0)
+            {
+                $status = 200;
+                $pages = (int)ceil($rows / $limit);
+                $offset = --$page * $limit;
+                $list = $query->orderBy($sortIndex, $sortOrder)->limit($limit)->offset($offset)->get();
+            }
+
+            return response()->json(compact('rows', 'pages', 'list'), $status);
+
     }
 
     /**

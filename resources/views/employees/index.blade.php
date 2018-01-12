@@ -3,27 +3,19 @@
 
 @push('styles')
 <link rel="stylesheet" type="text/css" href="{{url('vendor/node_modules/angular/angular-confirm.min.css')}}">
-<style>
-    .pagination-container,.search-container {
-        float: right;
-    }
-    .search-container {
-        margin: 16px 0px;
-    }
-</style>
 @endpush
 
 @push('scripts')
 
     @include('components.angular', ['modules' => [
         'cp.ngConfirm'=>'vendor/node_modules/angular/angular-confirm.min.js',
-        'angularUtils.directives.dirPagination'=>'vendor/node_modules/angular/dirPagination.js'
     ]])
 
     <script type="text/javascript">
 
-        app.controller('Controller', ['$scope','$http','$element','$ngConfirm', function($scope,$http,$element,$ngConfirm){
+        app.controller('Controller', ['$scope','$http','$element','$ngConfirm','$location', function($scope,$http,$element,$ngConfirm,$location){
 
+            var base_url = window.location.origin
             var url = $element.find('form').attr('action');
 
             $scope.form = {
@@ -31,13 +23,28 @@
                 mapping: {}
             };
 
-            $http.get('http://localhost/{{route}}').then(function(response){
-                $scope.{{route}} = response.data.list;
+            $scope.page = $location.search().page;
+
+            var params = {
+                page: $scope.page,
+                limit: 2,
+                sortIndex: 'id',
+                sortOrder: 'asc',
+                searchIndex: $location.search().searchIndex,
+                searchValue: $location.search().searchValue
+            }
+
+            $http.get(base_url + '/employees',{params:params}).then(function(response){
+                $scope.employees = response.data.list;
+                $scope.pages = response.data.pages;
             });
 
-            $scope.sort = function(keyname){
-                $scope.sortKey = keyname;
-                $scope.reverse = !$scope.reverse;
+            $scope.getNumber = function(num) {
+                return new Array(num);
+            }
+
+            $scope.changePage = function(page){
+                window.location.href = base_url + '/employees?page=' + page;
             }
 
             $scope.create = function(){
@@ -51,7 +58,7 @@
 
             $scope.update = function(index){
                 $scope.form.display  = true;
-                $scope.form.mapping = $scope.{{route}}[index];
+                $scope.form.mapping = $scope.employees[index];
             }
 
              $scope.save = function(){
@@ -110,7 +117,7 @@
                                  $http.post(url, {id : id, _method: 'delete'}).then(function(response){
 
                                      $ngConfirm(response.data.message);
-                                     $scope.{{route}}.splice(row,1);
+                                     $scope.employees.splice(row,1);
 
                                  }, function(response){
 
@@ -138,11 +145,11 @@ Event
 
     <div class="container" ng-show="!form.display">
 
-        <div class="create-container">
+        <div class="pull-left">
             <button class="btn btn-primary" ng-click="create()">Create</button>
         </div>
 
-        <div class="form-inline search-container">
+        <div class="form-inline pull-right">
             <div class="form-group">
                 <label>Search</label>
                 <input type="text" ng-model="search" class="form-control" placeholder="Search">
@@ -152,29 +159,29 @@ Event
         <table class="table table-striped table-hover">
             <thead>
             <tr>
-                <th  ng-click="sort('id')">Id<span class="glyphicon sort-icon" ng-show="sortKey=='id'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+                <th>Id</th>
                 <th>Action</th>
             </tr>
             </thead>
             <tbody>
-            <tr dir-paginate="data in {{route}}|orderBy:sortKey:reverse|filter:search|itemsPerPage:5">
+            <tr ng-repeat="data in employees">
                 <td><% data.id %></td>
                 <td>
-                    <button type="button" class="btn btn-warning" ng-click="update({{route}}.indexOf(data))">Update</button>
-                    <button type="button" class="btn btn-danger" ng-click="delete(data.id,{{route}}.indexOf(data))">Delete</button>
+                    <button type="button" class="btn btn-warning" ng-click="update(employees.indexOf(data))">Update</button>
+                    <button type="button" class="btn btn-danger" ng-click="delete(data.id,employees.indexOf(data))">Delete</button>
                 </td>
             </tr>
             </tbody>
         </table>
 
-        <div class="pagination-container">
-            <dir-pagination-controls max-size="5" direction-links="false" boundary-links="true"></dir-pagination-controls>
-        </div>
+        <ul class="pagination pagination-sm pull-right">
+            <li ng-repeat="i in getNumber(pages) track by $index" ng-class="page == $index + 1 ? 'active' : ''"><a ng-click="changePage($index + 1)"> <%$index+1%> </a></li>
+        </ul>
 
     </div>
 
     <div class="container" ng-show="form.display">
-        @include('{{route}}.form')
+        @include('employees.form')
     </div>
 
 </div>

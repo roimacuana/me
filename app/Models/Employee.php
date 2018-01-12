@@ -21,7 +21,7 @@ class Employee extends Model
      * Fillables
      * @var array
      */
-    protected $fillable = [
+    protected $fillable = ['title'
 
     ];
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="testApp">
+<html ng-app="Test">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,7 +10,7 @@
     <base href="/">
     @stack('metas')
 
-    <title> Application Name - @yield('title')</title>
+    <title> Test - @yield('title')</title>
     @yield('styles')@stack('styles')
     <style>
         .loader.active:after{

@@ -1,5 +1,5 @@
 
-      <form method="post" action="{{url('{{route}}')}}">
+      <form method="post" action="{{url('employees')}}">
             
            <div class="col-md-6">
                 <div class="form-group">

@@ -1,5 +1,6 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script type="text/javascript" src="{{url('vendor/node_modules/jquery/dist/jquery.min.js')}}"></script>
+<link rel="stylesheet" href="{{url('vendor/node_modules/bootstrap/bootstrap.min.css')}}">
+<script src="{{url('vendor/node_modules/bootstrap/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{url('vendor/node_modules/jquery/jquery.min.js')}}"></script>
 <script type="text/javascript" src="{{url('vendor/node_modules/angular/angular.min.js')}}"></script>
 
 <?php $angularModules = '';
@@ -21,13 +22,17 @@ endif;
             "Accept" : "application/json"
         }
     };
-    var app = angular.module('testApp', [<?php echo $angularModules; ?>], function($interpolateProvider){
+    var app = angular.module('Test', [<?php echo $angularModules; ?>], function($interpolateProvider){
 
         $interpolateProvider.startSymbol('<%');
         $interpolateProvider.endSymbol('%>') ;
 
-    }).config(function ($httpProvider) {
+    }).config(function ($locationProvider,$httpProvider) {
         $httpProvider.interceptors.push('myHttpInterceptor');
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
     }).factory('myHttpInterceptor', ['$q', '$rootScope', '$injector',
             function ($q, $rootScope, $injector) {
                 $rootScope.http = null;
@@ -59,13 +64,9 @@ endif;
                     }
                 }
             }
-    ]).filter('dateFormat', function(){
-            return function(x){
-                return new Date(x);
-            };
-    }).run(function($http){
-        $http.defaults.async = true;
-        $http.defaults.headers.common.Accept = "application/json";
-        $http.defaults.headers.common["Cache-Control"] = "no-cache, max-age=0";
+        ]).run(function($http){
+            $http.defaults.async = true;
+            $http.defaults.headers.common.Accept = "application/json";
+            $http.defaults.headers.common["Cache-Control"] = "no-cache, max-age=0";
     });
 </script>

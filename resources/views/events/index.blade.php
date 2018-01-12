@@ -16,8 +16,7 @@
 @push('scripts')
 
     @include('components.angular', ['modules' => [
-        'cp.ngConfirm'=>'vendor/node_modules/angular/angular-confirm.min.js',
-        'angularUtils.directives.dirPagination'=>'vendor/node_modules/angular/dirPagination.js'
+        'cp.ngConfirm'=>'vendor/node_modules/angular/angular-confirm.min.js'
     ]])
 
     <script type="text/javascript">
@@ -65,6 +64,7 @@
                  });
 
                  var config = {headers: {'Content-Type': undefined}};
+
 
                  return $ngConfirm({
                      icon: 'fa fa-warning',

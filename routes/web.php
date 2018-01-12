@@ -11,6 +11,4 @@
 |
 */
 
-
-
 Create::routes(App\Http\Controllers\EmployeeController::class);

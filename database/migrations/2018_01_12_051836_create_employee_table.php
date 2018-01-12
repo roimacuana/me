@@ -12,9 +12,9 @@ class CreateEmployeeTable extends Migration
      */
     public function up()
     {
-        Schema::create('employee', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->increments('id');
-            
+            $table->text('title', 255);
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ class CreateEmployeeTable extends Migration
      */
     public function down()
     {
-        Schema::drop('employee');
+        Schema::drop('employees');
     }
 }
